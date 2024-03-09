@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>registration</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Set the container height to the full viewport height */
+    }
+</style>
+<body>
+    <div class="container">
+        <form>
+            <table>
+                <h3>Registration</h3>
+                <tr>
+                    <td>City : </td>
+                    <td>
+                        <select id="citySelect">
+                            <option th:each="city : ${CityList}" th:value="${city.id}" th:text="${city.getName()}"></option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>TownShip : </td>
+                    <td>
+                        <select id="townshipSelect">
+                            <option th:each="township : ${TownShip}" th:value="${township.getId()}" th:text="${township.getName()}"></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td><button>Register</button></td>
+                <tr>
+            </table>
+        </form>
+    </div>
+</body>
+<script>
+    $(document).ready(function (){
+        $("#citySelect").change(function (){
+            var selectedValue = $(this).val();
+
+            $.ajax({
+                type:"GET",
+                url:"get-townshipsById",
+                data:{selectedValue:selectedValue},
+                success:function (data){
+                    console.log(data);
+                    var townshipSelect =$("#townshipSelect");
+                    townshipSelect.empty();
+                    for(let i=0;i<data.length;i++){
+                        var option = $("<option>").val(data[i].id).text(data[i].name);
+                        townshipSelect.append(option);
+                    }
+                },
+                error:function (data){
+                    alert("Error occurred.");
+                }
+            });
+        });
+    });
+</script>
+</html>
